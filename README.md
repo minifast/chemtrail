@@ -1,4 +1,4 @@
-Chemtrail [![Build Status](https://travis-ci.org/minifast/chemtrail.png)](https://travis-ci.org/minifast/chemtrail) [![Code Climate](https://codeclimate.com/github/minifast/chemtrail.png)](https://codeclimate.com/github/minifast/chemtrail)
+Chemtrail [![Gem Version](https://badge.fury.io/rb/chemtrail.png)](http://badge.fury.io/rb/chemtrail) [![Build Status](https://travis-ci.org/minifast/chemtrail.png)](https://travis-ci.org/minifast/chemtrail) [![Code Climate](https://codeclimate.com/github/minifast/chemtrail.png)](https://codeclimate.com/github/minifast/chemtrail)
 ==========
 
 Chemtrail lets you build and test CloudFormation templates.
