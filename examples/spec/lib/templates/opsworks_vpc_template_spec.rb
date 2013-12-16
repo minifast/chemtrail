@@ -26,5 +26,34 @@ describe OpsworksVpc do
   end
 
   describe "#resources" do
+    describe "VPC" do
+      it { should have_resource("VPC").with_type("AWS::EC2::VPC") }
+
+      it { should have_property("CidrBlock").on("VPC") }
+      it { should have_tag("Application").with_reference("AWS::StackName").on("VPC") }
+      it { should have_tag("Network").with_value("Public").on("VPC") }
+    end
+
+    describe "PublicSubnet" do
+      it { should have_resource("PublicSubnet").with_type("AWS::EC2::Subnet") }
+
+      it { should have_property("CidrBlock").on("PublicSubnet") }
+      it { should have_tag("Application").with_reference("AWS::StackName").on("PublicSubnet") }
+      it { should have_tag("Network").with_value("Public").on("PublicSubnet") }
+    end
+
+    describe "InternetGateway" do
+      it { should have_resource("InternetGateway").with_type("AWS::EC2::InternetGateway") }
+
+      it { should have_tag("Application").with_reference("AWS::StackName").on("InternetGateway") }
+      it { should have_tag("Network").with_value("Public").on("InternetGateway") }
+    end
+
+    describe "GatewayToInternet" do
+      it { should have_resource("GatewayToInternet").with_type("AWS::EC2::VPCGatewayAttachment") }
+
+      it { should have_property("VpcId").with_reference("VPC").on("GatewayToInternet") }
+      it { should have_property("InternetGatewayId").with_reference("InternetGateway").on("GatewayToInternet") }
+    end
   end
 end

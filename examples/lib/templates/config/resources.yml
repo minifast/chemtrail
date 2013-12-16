@@ -1,0 +1,27 @@
+VPC:
+  Tags:
+    - Key: Network
+      Value: Public
+
+PublicSubnet:
+  Tags:
+    - Key: Network
+      Value: Public
+
+InternetGateway:
+  Tags:
+    - Key: Network
+      Value: Public
+
+PublicRoute:
+  DestinationCidrBlock: 0.0.0.0/0
+
+InboundHTTPPublicNetworkAclEntry:
+  RuleNumber: "100"
+  Protocol: "6"
+  RuleAction: allow
+  Egress: false
+  CidrBlock: 0.0.0.0/0
+  PortRange:
+    From: "80"
+    To: "80"
