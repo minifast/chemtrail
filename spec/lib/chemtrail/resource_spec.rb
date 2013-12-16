@@ -2,6 +2,7 @@ require "spec_helper"
 
 describe Chemtrail::Resource do
   subject(:resource) { Chemtrail::Resource.new("toenails", "Gross") }
+  let(:hash) { resource.to_hash["toenails"] }
 
   its(:id) { should == "toenails" }
   its(:type) { should == "Gross" }
@@ -14,10 +15,14 @@ describe Chemtrail::Resource do
   end
 
   context "when there is a property" do
-    let(:hash) { resource.to_hash["toenails"] }
-
     before { resource.properties["UserDingus"] = "whatever" }
 
     specify { hash["Properties"].should include("UserDingus" => "whatever") }
+  end
+
+  context "when a property is configured through the initializer" do
+    subject(:resource) { Chemtrail::Resource.new("toenails", "Gross", clipping: "great") }
+
+    specify { hash["Properties"].should include(clipping: "great") }
   end
 end

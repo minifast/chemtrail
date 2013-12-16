@@ -1,9 +1,10 @@
 class Chemtrail::Resource
   attr_reader :id, :type
 
-  def initialize(id, type)
+  def initialize(id, type, properties = nil)
     @id = id
     @type = type
+    @properties = Chemtrail::PropertyList.new.merge(properties) if properties
   end
 
   def to_reference
