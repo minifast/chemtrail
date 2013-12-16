@@ -12,11 +12,9 @@ class Chemtrail::Output
   end
 
   def description_hash
-    if description.nil?
-      {}
-    else
-      {"Description" => description}
-    end
+    hash = {}
+    hash["Description"] = description unless description.nil?
+    hash
   end
 
   def to_hash

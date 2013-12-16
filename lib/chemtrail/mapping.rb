@@ -12,13 +12,7 @@ class Chemtrail::Mapping
   end
 
   def find(top_level, second_level)
-    {
-      "Fn::FindInMap" => [
-        id,
-        Chemtrail::ReferencePresenter.new(top_level).to_parameter,
-        Chemtrail::ReferencePresenter.new(second_level).to_parameter
-      ]
-    }
+    Chemtrail::Function.new("Fn::FindInMap", id, top_level, second_level).to_hash
   end
 
   def to_hash

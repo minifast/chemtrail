@@ -1,7 +1,7 @@
 require "spec_helper"
 
-describe Chemtrail::Declaration do
-  subject(:declaration) { Chemtrail::Declaration.new("parmesan", "String") }
+describe Chemtrail::Parameter do
+  subject(:parameter) { Chemtrail::Parameter.new("parmesan", "String") }
 
   describe "#specifications" do
     context "when there are no specifications" do
@@ -9,7 +9,7 @@ describe Chemtrail::Declaration do
     end
 
     context "when a specification has been passed into the initializer" do
-      subject(:declaration) { Chemtrail::Declaration.new("parmesan", "String", ok: "great") }
+      subject(:parameter) { Chemtrail::Parameter.new("parmesan", "String", ok: "great") }
 
       its(:specifications) { should == {ok: "great"} }
     end
@@ -21,12 +21,12 @@ describe Chemtrail::Declaration do
 
   describe "#to_hash" do
     its(:to_hash) { should have_key "parmesan" }
-    specify { declaration.to_hash["parmesan"].should include("Type" => "String") }
+    specify { parameter.to_hash["parmesan"].should include("Type" => "String") }
 
     context "when there is a specification" do
-      before { declaration.specifications[:ducks] = "amazing" }
+      before { parameter.specifications[:ducks] = "amazing" }
 
-      specify { declaration.to_hash["parmesan"].should include(ducks: "amazing") }
+      specify { parameter.to_hash["parmesan"].should include(ducks: "amazing") }
     end
   end
 end

@@ -1,4 +1,4 @@
-class Chemtrail::Declaration
+class Chemtrail::Parameter
   attr_reader :id, :type
 
   def initialize(id, type, specifications = {})

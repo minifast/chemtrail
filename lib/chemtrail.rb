@@ -1,6 +1,6 @@
 require "chemtrail/version"
 require "chemtrail/template"
-require "chemtrail/declaration"
+require "chemtrail/parameter"
 require "chemtrail/mapping"
 require "chemtrail/resource"
 require "chemtrail/output"
