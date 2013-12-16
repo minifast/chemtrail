@@ -1,5 +1,6 @@
 require "thor"
 require "json"
+require "chemtrail"
 
 class Chemtrail::Cli < Thor
   default_task :list

@@ -5,8 +5,9 @@ describe Chemtrail::Cli do
 
   describe "#list" do
     it "lists available templates" do
-      Kernel.should_receive(:puts).with("tacos")
-      cli.list
+      got_tacos = false
+      Kernel.stub(:puts) { |string| got_tacos ||= (string == "tacos") }
+      expect { cli.list }.to change{ got_tacos }.to(true)
     end
   end
 

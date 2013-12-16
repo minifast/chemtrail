@@ -3,15 +3,15 @@ require "spec_helper"
 describe Chemtrail::Parameter do
   subject(:parameter) { Chemtrail::Parameter.new("parmesan", "String") }
 
-  describe "#specifications" do
-    context "when there are no specifications" do
-      its(:specifications) { should be_empty }
+  describe "#fields" do
+    context "when there are no fields" do
+      its(:fields) { should be_empty }
     end
 
     context "when a specification has been passed into the initializer" do
       subject(:parameter) { Chemtrail::Parameter.new("parmesan", "String", ok: "great") }
 
-      its(:specifications) { should == {ok: "great"} }
+      its(:fields) { should == {ok: "great"} }
     end
   end
 
@@ -24,7 +24,7 @@ describe Chemtrail::Parameter do
     specify { parameter.to_hash["parmesan"].should include("Type" => "String") }
 
     context "when there is a specification" do
-      before { parameter.specifications[:ducks] = "amazing" }
+      before { parameter.fields[:ducks] = "amazing" }
 
       specify { parameter.to_hash["parmesan"].should include(ducks: "amazing") }
     end

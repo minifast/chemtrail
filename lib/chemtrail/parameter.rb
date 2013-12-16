@@ -1,14 +1,14 @@
 class Chemtrail::Parameter
   attr_reader :id, :type
 
-  def initialize(id, type, specifications = {})
+  def initialize(id, type, fields = {})
     @id = id
     @type = type
-    @specifications = specifications
+    @fields = fields
   end
 
-  def specifications
-    @specifications ||= {}
+  def fields
+    @fields ||= {}
   end
 
   def to_reference
@@ -21,7 +21,7 @@ class Chemtrail::Parameter
     {
       id => {
         "Type" => type
-      }.merge(specifications)
+      }.merge(fields)
     }
   end
 end
