@@ -10,4 +10,8 @@ class Chemtrail::Intrinsic
       "Ref" => id
     }
   end
+
+  def as_tag(key)
+    {"Key" => key, "Value" => self}
+  end
 end

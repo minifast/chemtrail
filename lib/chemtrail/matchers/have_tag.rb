@@ -3,20 +3,21 @@ require "rspec/expectations"
 module Chemtrail::RSpec
   extend RSpec::Matchers::DSL
 
-  matcher :have_property do |property_name|
+  matcher :have_tag do |key_name|
     define_method :resource_for do |actual|
       actual.resources.detect { |resource| resource.id == @resource_id }
     end
 
-    define_method :property_for do |resource|
-      resource.properties[property_name]
+    define_method :tag_for do |resource|
+      tags = resource.properties["Tags"] || []
+      tags.detect { |tag| tag["Key"] == key_name }
     end
 
-    define_method :matches_value? do |property|
+    define_method :matches_value? do |tag|
       if @value
-        property == @value
+        tag["Value"] == @value
       elsif @reference
-        property.id == @reference
+        tag["Value"].id == @reference
       else
         true
       end
@@ -24,8 +25,8 @@ module Chemtrail::RSpec
 
     match do |actual|
       resource = resource_for(actual)
-      property = property_for(resource)
-      !resource.nil? && !property.nil? && matches_value?(property)
+      tag = tag_for(resource)
+      !resource.nil? && !tag.nil? && matches_value?(tag)
     end
 
     chain :on do |resource_id|
@@ -42,14 +43,14 @@ module Chemtrail::RSpec
 
     failure_message_for_should do |actual|
       if resource = resource_for(actual)
-        if property = property_for(resource)
+        if tag = tag_for(resource)
           if @value
-            %(expected resource #{@resource_id.inspect} property #{property_name.inspect} to have value #{@value.inspect}, but got #{property.inspect})
+            %(expected resource #{@resource_id.inspect} tag #{key_name.inspect} to have value #{@value.inspect}, but got #{tag["Value"].inspect})
           else
-            %(expected resource #{@resource_id.inspect} property #{property_name.inspect} to refer to #{@reference.inspect}, but got #{property.id.inspect})
+            %(expected resource #{@resource_id.inspect} tag #{key_name.inspect} to refer to #{@reference.inspect}, but got #{tag["Value"].id.inspect})
           end
         else
-          %(expected resource #{@resource_id.inspect} to have property #{property_name.inspect})
+          %(expected resource #{@resource_id.inspect} to have tag #{key_name.inspect})
         end
       else
         %(expected to find resource #{@resource_id.inspect}, but got nothing)
