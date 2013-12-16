@@ -33,6 +33,20 @@ Or install it yourself as:
 Usage
 -----
 
+See the `examples/` directory for examples of subclassing and testing templates.
+
+Listing all available templates in `lib/templates`:
+
+    $ chemtrail list
+
+Listing templates in a different path:
+
+    $ chemtrail list --path lib/taco/panic
+
+Building a template:
+
+    $ chemtrail build crazy:cat:pants
+
 
 Contributing
 ------------
