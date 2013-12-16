@@ -3,8 +3,9 @@ require "chemtrail/reference_presenter"
 class Chemtrail::Mapping
   attr_reader :id
 
-  def initialize(id)
+  def initialize(id, entries = nil)
     @id = id
+    @entries = entries
   end
 
   def entries

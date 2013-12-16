@@ -5,13 +5,19 @@ describe Chemtrail::Mapping do
 
   describe "#to_hash" do
     context "when there are no entries" do
-      its(:to_hash) { should have_key "atlas" }
+      its(:to_hash) { should == {"atlas" => {}} }
     end
 
     context "when an entry has been added" do
-      before { mapping.entries["teeth"] = {} }
+      before { mapping.entries[:teeth] = {} }
 
-      specify { mapping.to_hash["atlas"].should have_key "teeth" }
+      specify { mapping.to_hash["atlas"].should == {teeth: {}} }
+    end
+
+    context "when an entry is passed into the initializer" do
+      subject(:mapping) { Chemtrail::Mapping.new("atlas", charles: {}) }
+
+      specify { mapping.to_hash["atlas"].should == {charles: {}} }
     end
   end
 
