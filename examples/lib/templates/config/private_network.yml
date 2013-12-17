@@ -1,0 +1,34 @@
+PrivateSubnet:
+  Tags:
+    - Key: Network
+      Value: Private
+
+PrivateRouteTable:
+  Tags:
+    - Key: Network
+      Value: Private
+
+PrivateNetworkAcl:
+  Tags:
+    - Key: Network
+      Value: Private
+
+InboundPrivateNetworkAclEntry:
+  RuleNumber: "100"
+  Protocol: "6"
+  RuleAction: allow
+  Egress: "false"
+  CidrBlock: 0.0.0.0/0
+  PortRange:
+    From: "0"
+    To: "65535"
+
+OutBoundPrivateNetworkAclEntry:
+  RuleNumber: "100"
+  Protocol: "6"
+  RuleAction: allow
+  Egress: "true"
+  CidrBlock: 0.0.0.0/0
+  PortRange:
+    From: "0"
+    To: "65535"

@@ -1,89 +1,93 @@
 require "chemtrail"
 require "yaml"
+require_relative "opsworks_vpc/opsworks"
+require_relative "opsworks_vpc/nat_device"
+require_relative "opsworks_vpc/public_network"
+require_relative "opsworks_vpc/load_balancer"
+require_relative "opsworks_vpc/private_network"
 
-class OpsworksVpc < Chemtrail::Template
-  def description
-    <<-DESCRIPTION.strip.gsub!(/\s+/, ' ')
-      Sample template showing how to create a VPC environment for AWS OpsWorks.
-      The stack contains 2 subnets: the first subnet is public and contains the
-      load balancer, a NAT device for internet access from the private subnet.
-      The second subnet is private.
+module OpsworksVpc
+  class Stack < Chemtrail::Template
+    def description
+      <<-DESCRIPTION.strip.gsub!(/\s+/, ' ')
+        Sample template showing how to create a VPC environment for AWS OpsWorks.
+        The stack contains 2 subnets: the first subnet is public and contains the
+        load balancer, a NAT device for internet access from the private subnet.
+        The second subnet is private.
 
-      You will be billed for the AWS resources used if you create a stack from
-      this template.
-    DESCRIPTION
-  end
-
-  def parameters
-    [
-      Chemtrail::Parameter.new("NATInstanceType", "String", parameters_config["NATInstanceType"])
-    ]
-  end
-
-  def mappings
-    [
-      Chemtrail::Mapping.new("AWSNATAMI", mappings_config["AWSNATAMI"]),
-      Chemtrail::Mapping.new("AWSInstanceType2Arch", mappings_config["AWSInstanceType2Arch"]),
-      subnet_config
-    ]
-  end
-
-  def resources
-    [
-      vpc,
-      public_subnet,
-      internet_gateway,
-      gateway_to_internet
-    ]
-  end
-
-  def subnet_config
-    @subnet_config ||= Chemtrail::Mapping.new("SubnetConfig", mappings_config["SubnetConfig"])
-  end
-
-  def vpc
-    @vpc ||= Chemtrail::Resource.new("VPC", "AWS::EC2::VPC", resources_config["VPC"]).tap do |config|
-      config.properties["CidrBlock"] = subnet_config.find("VPC", "CIDR")
-      config.properties["Tags"] << stack_name.as_tag("Application")
+        You will be billed for the AWS resources used if you create a stack from
+        this template.
+      DESCRIPTION
     end
-  end
 
-  def public_subnet
-    @public_subnet ||= Chemtrail::Resource.new("PublicSubnet", "AWS::EC2::Subnet", resources_config["PublicSubnet"]).tap do |config|
-      config.properties["VpcId"] = vpc
-      config.properties["CidrBlock"] = subnet_config.find("VPC", "CIDR")
-      config.properties["Tags"] << stack_name.as_tag("Application")
+    def parameters
+      [nat_instance_type]
     end
-  end
 
-  def internet_gateway
-    @internet_gateway ||= Chemtrail::Resource.new("InternetGateway", "AWS::EC2::InternetGateway", resources_config["InternetGateway"]).tap do |config|
-      config.properties["Tags"] << stack_name.as_tag("Application")
+    def mappings
+      [instance_type_arch, subnet_config] + nat.mappings
     end
-  end
 
-  def gateway_to_internet
-    @gateway_to_internet ||= Chemtrail::Resource.new("GatewayToInternet", "AWS::EC2::VPCGatewayAttachment", resources_config["GatewayToInternet"]).tap do |config|
-      config.properties["VpcId"] = vpc
-      config.properties["InternetGatewayId"] = internet_gateway
+    def resources
+      [vpc] + public_network.resources + private_network.resources + load_balancer.resources + opsworks.resources + nat.resources
     end
-  end
 
-  def stack_name
-    @stack_name ||= Chemtrail::Intrinsic.new("AWS::StackName")
-  end
+    def outputs
+      [
+        Chemtrail::Output.new("VPC", vpc),
+        Chemtrail::Output.new("PrivateSubnets", private_network.subnet),
+        Chemtrail::Output.new("PublicSubnets", public_network.subnet),
+        Chemtrail::Output.new("LoadBalancer", load_balancer.elb),
+      ]
+    end
 
-  protected
+    def nat_instance_type
+      @nat_instance_type ||= Chemtrail::Parameter.new("NATInstanceType", "String", stack_config["NATInstanceType"])
+    end
 
-  def parameters_config
-    @parameters_config ||= YAML.load_file(File.expand_path("../config/parameters.yml", __FILE__))
-  end
+    def instance_type_arch
+      @instance_type_arch ||= Chemtrail::Mapping.new("AWSInstanceType2Arch", stack_config["AWSInstanceType2Arch"])
+    end
 
-  def mappings_config
-    @mappings_config ||= YAML.load_file(File.expand_path("../config/mappings.yml", __FILE__))
-  end
+    def subnet_config
+      @subnet_config ||= Chemtrail::Mapping.new("SubnetConfig", stack_config["SubnetConfig"])
+    end
 
-  def resources_config
-    @resources_config ||= YAML.load_file(File.expand_path("../config/resources.yml", __FILE__))
+    def vpc
+      @vpc ||= Chemtrail::Resource.new("VPC", "AWS::EC2::VPC", stack_config["VPC"]).tap do |config|
+        config.properties["CidrBlock"] = subnet_config.find("VPC", "CIDR")
+        config.properties["Tags"] << stack_name.as_tag("Application")
+      end
+    end
+
+    protected
+
+    def nat
+      @nat ||= OpsworksVpc::NatDevice.new(vpc, public_network.subnet, opsworks.security_group, nat_instance_type)
+    end
+
+    def opsworks
+      @opsworks ||= OpsworksVpc::Opsworks.new(vpc, load_balancer.security_group)
+    end
+
+    def load_balancer
+      @load_balancer ||= OpsworksVpc::LoadBalancer.new(vpc, public_network.subnet)
+    end
+
+    def public_network
+      @public_network ||= OpsworksVpc::PublicNetwork.new(vpc, subnet_config)
+    end
+
+    def private_network
+      @private_network ||= OpsworksVpc::PrivateNetwork.new(vpc, subnet_config, nat.device)
+    end
+
+    def stack_name
+      @stack_name ||= Chemtrail::Intrinsic.new("AWS::StackName")
+    end
+
+    def stack_config
+      @stack_config ||= YAML.load_file(File.expand_path("../config/stack.yml", __FILE__))
+    end
   end
 end

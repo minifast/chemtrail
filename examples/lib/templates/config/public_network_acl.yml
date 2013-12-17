@@ -1,0 +1,54 @@
+PublicNetworkAcl:
+  Tags:
+    - Key: Network
+      Value: Public
+
+InboundHTTPPublicNetworkAclEntry:
+  RuleNumber: "100"
+  Protocol: "6"
+  RuleAction: allow
+  Egress: "false"
+  CidrBlock: 0.0.0.0/0
+  PortRange:
+    From: "80"
+    To: "80"
+
+InboundHTTPSPublicNetworkAclEntry:
+  RuleNumber: "101"
+  Protocol: "6"
+  RuleAction: allow
+  Egress: "false"
+  CidrBlock: 0.0.0.0/0
+  PortRange:
+    From: "443"
+    To: "443"
+
+InboundSSHPublicNetworkAclEntry:
+  RuleNumber: "102"
+  Protocol: "6"
+  RuleAction: allow
+  Egress: "false"
+  CidrBlock: 0.0.0.0/0
+  PortRange:
+    From: "22"
+    To: "22"
+
+InboundEmphemeralPublicNetworkAclEntry:
+  RuleNumber: "103"
+  Protocol: "6"
+  RuleAction: allow
+  Egress: "false"
+  CidrBlock: 0.0.0.0/0
+  PortRange:
+    From: "1024"
+    To: "65535"
+
+OutboundPublicNetworkAclEntry:
+  RuleNumber: "100"
+  Protocol: "6"
+  RuleAction: allow
+  Egress: "true"
+  CidrBlock: 0.0.0.0/0
+  PortRange:
+    From: "0"
+    To: "65535"

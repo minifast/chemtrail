@@ -1,0 +1,17 @@
+PublicSubnet:
+  Tags:
+    - Key: Network
+      Value: Public
+
+InternetGateway:
+  Tags:
+    - Key: Network
+      Value: Public
+
+PublicRoute:
+  DestinationCidrBlock: 0.0.0.0/0
+
+PublicRouteTable:
+  Tags:
+    - Key: Network
+      Value: Public

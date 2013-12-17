@@ -1,0 +1,49 @@
+AWSNATAMI:
+  us-east-1:
+    AMI: ami-c6699baf
+  us-west-2:
+    AMI: ami-52ff7262
+  us-west-1:
+    AMI: ami-3bcc9e7e
+  eu-west-1:
+    AMI: ami-0b5b6c7f
+  ap-southeast-1:
+    AMI: ami-02eb9350
+  ap-southeast-2:
+    AMI: ami-ab990e91
+  ap-northeast-1:
+    AMI: ami-14d86d15
+  sa-east-1:
+    AMI: ami-0439e619
+
+NATIPAddress:
+  Domain: vpc
+
+NATDevice:
+  SourceDestCheck: "false"
+
+NATSecurityGroup:
+  GroupDescription: Enable internal access to the NAT device
+  SecurityGroupIngress:
+    - IpProtocol: tcp
+      FromPort: "80"
+      ToPort: "80"
+    - IpProtocol: tcp
+      FromPort: "9418"
+      ToPort: "9418"
+    - IpProtocol: tcp
+      FromPort: "443"
+      ToPort: "443"
+  SecurityGroupEgress:
+    - IpProtocol: tcp
+      FromPort: "80"
+      ToPort: "80"
+      CidrIp: 0.0.0.0/0
+    - IpProtocol: tcp
+      FromPort: "9418"
+      ToPort: "9418"
+      CidrIp: 0.0.0.0/0
+    - IpProtocol: tcp
+      FromPort: "443"
+      ToPort: "443"
+      CidrIp: 0.0.0.0/0

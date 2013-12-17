@@ -1,0 +1,5 @@
+OpsWorksSecurityGroup:
+  SecurityGroupIngress:
+    - IpProtocol: tcp
+      FromPort: "80"
+      ToPort: "80"

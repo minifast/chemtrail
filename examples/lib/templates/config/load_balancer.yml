@@ -1,0 +1,23 @@
+LoadBalancerSecurityGroup:
+  SecurityGroupIngress:
+    - IpProtocol: tcp
+      FromPort: "80"
+      ToPort: "80"
+      CidrIp: 0.0.0.0/0
+  SecurityGroupEgress:
+    - IpProtocol: tcp
+      FromPort: "80"
+      ToPort: "80"
+      CidrIp: 0.0.0.0/0
+
+ElasticLoadBalancer:
+  Listeners:
+    - LoadBalancerPort: "80"
+      InstancePort: "80"
+      Protocol: HTTP
+  HealthCheck:
+    Target: HTTP:80/
+    HealthyThreshold: "3"
+    UnhealthyThreshold: "5"
+    Interval: "90"
+    Timeout: "60"
