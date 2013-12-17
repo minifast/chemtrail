@@ -49,6 +49,10 @@ Building a template:
 
     $ chemtrail build crazy:cat:pants
 
+Validating a template with Amazon (note that you will need to set the environment variables `AWS_REGION`, `AWS_ACCESS_KEY_ID` and `AWS_SECRET_KEY`):
+
+    $ chemtrail validate tangy:socks
+
 
 Contributing
 ------------
