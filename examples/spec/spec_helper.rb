@@ -2,6 +2,7 @@ $:<< File.expand_path("../../../lib", __FILE__)
 
 require "chemtrail"
 require "chemtrail/rspec"
+require "json"
 
 Dir.glob(File.expand_path("../../lib/templates/**/*_template.rb", __FILE__)).each { |t| require t }
 
