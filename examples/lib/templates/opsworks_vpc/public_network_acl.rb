@@ -22,7 +22,7 @@ module OpsworksVpc
     def network_acl
       @network_acl ||= Chemtrail::Resource.new("PublicNetworkAcl", "AWS::EC2::NetworkAcl", resources_config["PublicNetworkAcl"]).tap do |config|
         config.properties["VpcId"] = vpc
-        config.properties["Tags"] << stack_name.as_tag("Application")
+        config.properties["Tags"].unshift(stack_name.as_tag("Application"))
       end
     end
 

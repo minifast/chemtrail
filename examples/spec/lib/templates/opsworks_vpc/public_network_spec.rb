@@ -27,6 +27,11 @@ describe OpsworksVpc::PublicNetwork do
       its(:gateway_to_internet) { should have_property("InternetGatewayId").with_reference("InternetGateway") }
     end
 
+    describe "PublicRoute" do
+      its(:route) { should have_property("RouteTableId").with_reference("PublicRouteTable") }
+      its(:route) { should have_property("GatewayId").with_reference("InternetGateway") }
+    end
+
     describe "PublicRouteTable" do
       its(:route_table) { should have_property("VpcId").with_reference("VPC") }
       its(:route_table) { should have_tag("Application").with_reference("AWS::StackName") }

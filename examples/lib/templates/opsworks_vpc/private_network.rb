@@ -25,14 +25,14 @@ module OpsworksVpc
       @subnet ||= Chemtrail::Resource.new("PrivateSubnet", "AWS::EC2::Subnet", resources_config["PrivateSubnet"]).tap do |config|
         config.properties["VpcId"] = vpc
         config.properties["CidrBlock"] = subnet_config.find("Private", "CIDR")
-        config.properties["Tags"] << stack_name.as_tag("Application")
+        config.properties["Tags"].unshift(stack_name.as_tag("Application"))
       end
     end
 
     def route_table
       @route_table ||= Chemtrail::Resource.new("PrivateRouteTable", "AWS::EC2::RouteTable", resources_config["PrivateRouteTable"]).tap do |config|
         config.properties["VpcId"] = vpc
-        config.properties["Tags"] << stack_name.as_tag("Application")
+        config.properties["Tags"].unshift(stack_name.as_tag("Application"))
       end
     end
 
@@ -53,7 +53,7 @@ module OpsworksVpc
     def network_acl
       @network_acl ||= Chemtrail::Resource.new("PrivateNetworkAcl", "AWS::EC2::NetworkAcl", resources_config["PrivateNetworkAcl"]).tap do |config|
         config.properties["VpcId"] = vpc
-        config.properties["Tags"] << stack_name.as_tag("Application")
+        config.properties["Tags"].unshift(stack_name.as_tag("Application"))
       end
     end
 

@@ -35,8 +35,8 @@ module OpsworksVpc
     def outputs
       [
         Chemtrail::Output.new("VPC", vpc, "VPC"),
-        Chemtrail::Output.new("PrivateSubnets", private_network.subnet, "Public Subnet"),
-        Chemtrail::Output.new("PublicSubnets", public_network.subnet, "Private Subnet"),
+        Chemtrail::Output.new("PrivateSubnets", private_network.subnet, "Private Subnet"),
+        Chemtrail::Output.new("PublicSubnets", public_network.subnet, "Public Subnet"),
         Chemtrail::Output.new("LoadBalancer", load_balancer.elb, "Load Balancer"),
       ]
     end
@@ -56,7 +56,7 @@ module OpsworksVpc
     def vpc
       @vpc ||= Chemtrail::Resource.new("VPC", "AWS::EC2::VPC", stack_config["VPC"]).tap do |config|
         config.properties["CidrBlock"] = subnet_config.find("VPC", "CIDR")
-        config.properties["Tags"] << stack_name.as_tag("Application")
+        config.properties["Tags"].unshift(stack_name.as_tag("Application"))
       end
     end
 

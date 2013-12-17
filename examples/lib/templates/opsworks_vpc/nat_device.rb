@@ -32,7 +32,7 @@ module OpsworksVpc
 
     def ip
       @ip ||= Chemtrail::Resource.new("NATIPAddress", "AWS::EC2::EIP", nat_device_config["NATIPAddress"]).tap do |config|
-        config.properties["VpcId"] = vpc
+        config.properties["InstanceId"] = device
       end
     end
 

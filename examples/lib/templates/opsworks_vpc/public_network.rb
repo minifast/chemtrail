@@ -24,13 +24,13 @@ module OpsworksVpc
       @subnet ||= Chemtrail::Resource.new("PublicSubnet", "AWS::EC2::Subnet", resources_config["PublicSubnet"]).tap do |config|
         config.properties["VpcId"] = vpc
         config.properties["CidrBlock"] = subnet_config.find("Public", "CIDR")
-        config.properties["Tags"] << stack_name.as_tag("Application")
+        config.properties["Tags"].unshift(stack_name.as_tag("Application"))
       end
     end
 
     def internet_gateway
       @internet_gateway ||= Chemtrail::Resource.new("InternetGateway", "AWS::EC2::InternetGateway", resources_config["InternetGateway"]).tap do |config|
-        config.properties["Tags"] << stack_name.as_tag("Application")
+        config.properties["Tags"].unshift(stack_name.as_tag("Application"))
       end
     end
 
@@ -44,14 +44,14 @@ module OpsworksVpc
     def route_table
       @route_table ||= Chemtrail::Resource.new("PublicRouteTable", "AWS::EC2::RouteTable", resources_config["PublicRouteTable"]).tap do |config|
         config.properties["VpcId"] = vpc
-        config.properties["Tags"] << stack_name.as_tag("Application")
+        config.properties["Tags"].unshift(stack_name.as_tag("Application"))
       end
     end
 
     def route
       @route ||= Chemtrail::Resource.new("PublicRoute", "AWS::EC2::Route", resources_config["PublicRoute"]).tap do |config|
         config.properties["RouteTableId"] = route_table
-        config.properties["GatewayId"] = gateway_to_internet
+        config.properties["GatewayId"] = internet_gateway
       end
     end
 

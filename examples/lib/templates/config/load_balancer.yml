@@ -1,4 +1,5 @@
 LoadBalancerSecurityGroup:
+  GroupDescription: Enable HTTP access on port 80
   SecurityGroupIngress:
     - IpProtocol: tcp
       FromPort: "80"

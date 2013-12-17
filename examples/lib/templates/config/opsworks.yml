@@ -1,4 +1,5 @@
 OpsWorksSecurityGroup:
+  GroupDescription: Allow the OpsWorks instances to access the NAT device
   SecurityGroupIngress:
     - IpProtocol: tcp
       FromPort: "80"

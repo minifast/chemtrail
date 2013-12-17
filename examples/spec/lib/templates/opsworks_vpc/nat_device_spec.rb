@@ -39,7 +39,7 @@ describe OpsworksVpc::NatDevice do
     end
 
     describe "NATIPAddress" do
-      its(:ip) { should have_property("VpcId").with_reference("VPC") }
+      its(:ip) { should have_property("InstanceId").with_reference("NATDevice") }
     end
   end
 end
