@@ -57,4 +57,3 @@ VPC:
   Tags:
     - Key: Network
       Value: Public
-

@@ -34,10 +34,10 @@ module OpsworksVpc
 
     def outputs
       [
-        Chemtrail::Output.new("VPC", vpc),
-        Chemtrail::Output.new("PrivateSubnets", private_network.subnet),
-        Chemtrail::Output.new("PublicSubnets", public_network.subnet),
-        Chemtrail::Output.new("LoadBalancer", load_balancer.elb),
+        Chemtrail::Output.new("VPC", vpc, "VPC"),
+        Chemtrail::Output.new("PrivateSubnets", private_network.subnet, "Public Subnet"),
+        Chemtrail::Output.new("PublicSubnets", public_network.subnet, "Private Subnet"),
+        Chemtrail::Output.new("LoadBalancer", load_balancer.elb, "Load Balancer"),
       ]
     end
 

@@ -33,7 +33,9 @@ Or install it yourself as:
 Usage
 -----
 
-See the `examples/` directory for examples of subclassing and testing templates.
+See the `examples/` directory for an example of test-driving the
+[OpsWorks VPC](http://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-vpc.html)
+CloudFormation template.
 
 Listing all available templates in `lib/templates`:
 
