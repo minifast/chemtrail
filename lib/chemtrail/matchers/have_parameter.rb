@@ -23,9 +23,9 @@ module Chemtrail::RSpec
 
     failure_message_for_should do |parameter_list|
       if parameter = parameter_for(parameter_list)
-        %(expected parameter #{parameter_id.inspect} to have type #{@type.inspect}, but got #{parameter.type.inspect})
+        %(expected #{parameter_id.inspect} to have type #{@type.inspect}, but got #{parameter.type.inspect})
       else
-        %(expected to find parameter #{parameter_id.inspect}, but got nothing)
+        %(expected to find #{parameter_id.inspect}, but got nothing)
       end
     end
   end
