@@ -20,14 +20,16 @@ class Chemtrail::ReferencePresenter
   def to_parameter
     if reference?
       argument.to_reference
-    elsif iterable?
-      if hashlike?
-        argument.reduce(argument) { |h, (k, v)| h[k] = self.class.new(v).to_parameter; h }
-      else
-        argument.map { |item| self.class.new(item).to_parameter }
-      end
     else
-      argument
+      if iterable?
+        if hashlike?
+          argument.reduce(argument) { |h, (k, v)| h[k] = self.class.new(v).to_parameter; h }
+        else
+          argument.map { |item| self.class.new(item).to_parameter }
+        end
+      else
+        argument
+      end
     end
   end
 end

@@ -4,10 +4,6 @@ module Chemtrail::RSpec
   extend RSpec::Matchers::DSL
 
   matcher :have_tag do |key_name|
-    define_method :resource_for do |actual|
-      actual.resources.detect { |resource| resource.id == @resource_id }
-    end
-
     define_method :tag_for do |resource|
       tags = resource.properties["Tags"] || []
       tags.detect { |tag| tag["Key"] == key_name }
@@ -23,14 +19,9 @@ module Chemtrail::RSpec
       end
     end
 
-    match do |actual|
-      resource = resource_for(actual)
+    match do |resource|
       tag = tag_for(resource)
       !resource.nil? && !tag.nil? && matches_value?(tag)
-    end
-
-    chain :on do |resource_id|
-      @resource_id = resource_id
     end
 
     chain :with_value do |value|
@@ -41,19 +32,15 @@ module Chemtrail::RSpec
       @reference = reference
     end
 
-    failure_message_for_should do |actual|
-      if resource = resource_for(actual)
-        if tag = tag_for(resource)
-          if @value
-            %(expected resource #{@resource_id.inspect} tag #{key_name.inspect} to have value #{@value.inspect}, but got #{tag["Value"].inspect})
-          else
-            %(expected resource #{@resource_id.inspect} tag #{key_name.inspect} to refer to #{@reference.inspect}, but got #{tag["Value"].id.inspect})
-          end
+    failure_message_for_should do |resource|
+      if tag = tag_for(resource)
+        if @value
+          %(expected resource #{resource.id} tag #{key_name.inspect} to have value #{@value.inspect}, but got #{tag["Value"].inspect})
         else
-          %(expected resource #{@resource_id.inspect} to have tag #{key_name.inspect})
+          %(expected resource #{resource.id} tag #{key_name.inspect} to refer to #{@reference.inspect}, but got #{tag["Value"].id.inspect})
         end
       else
-        %(expected to find resource #{@resource_id.inspect}, but got nothing)
+        %(expected resource #{resource.id} to have tag #{key_name.inspect})
       end
     end
   end

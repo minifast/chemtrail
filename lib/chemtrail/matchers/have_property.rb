@@ -4,10 +4,6 @@ module Chemtrail::RSpec
   extend RSpec::Matchers::DSL
 
   matcher :have_property do |property_name|
-    define_method :resource_for do |actual|
-      actual.resources.detect { |resource| resource.id == @resource_id }
-    end
-
     define_method :property_for do |resource|
       resource.properties[property_name]
     end
@@ -22,14 +18,27 @@ module Chemtrail::RSpec
       end
     end
 
-    match do |actual|
-      resource = resource_for(actual)
-      property = property_for(resource)
-      !resource.nil? && !property.nil? && matches_value?(property)
+    define_method :includes_value? do |property|
+      if @value
+        property.includes?(@value)
+      elsif @reference
+        property.any? { |p| p.id == @reference }
+      else
+        true
+      end
     end
 
-    chain :on do |resource_id|
-      @resource_id = resource_id
+    define_method :matches_strategy? do |property|
+      if @including
+        includes_value?(property)
+      else
+        matches_value?(property)
+      end
+    end
+
+    match do |resource|
+      property = property_for(resource)
+      !resource.nil? && !property.nil? && matches_strategy?(property)
     end
 
     chain :with_value do |value|
@@ -40,19 +49,25 @@ module Chemtrail::RSpec
       @reference = reference
     end
 
-    failure_message_for_should do |actual|
-      if resource = resource_for(actual)
-        if property = property_for(resource)
-          if @value
-            %(expected resource #{@resource_id.inspect} property #{property_name.inspect} to have value #{@value.inspect}, but got #{property.inspect})
-          else
-            %(expected resource #{@resource_id.inspect} property #{property_name.inspect} to refer to #{@reference.inspect}, but got #{property.id.inspect})
-          end
+    chain :including_value do |value|
+      @including = true
+      @value = value
+    end
+
+    chain :including_reference do |reference|
+      @including = true
+      @reference = reference
+    end
+
+    failure_message_for_should do |resource|
+      if property = property_for(resource)
+        if @value
+          %(expected resource #{resource.id} property #{property_name.inspect} to have value #{@value.inspect}, but got #{property.inspect})
         else
-          %(expected resource #{@resource_id.inspect} to have property #{property_name.inspect})
+          %(expected resource #{resource.id} property #{property_name.inspect} to refer to #{@reference.inspect}, but got #{property.id.inspect})
         end
       else
-        %(expected to find resource #{@resource_id.inspect}, but got nothing)
+        %(expected resource #{resource.id} to have property #{property_name.inspect})
       end
     end
   end

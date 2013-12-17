@@ -4,10 +4,6 @@ module Chemtrail::RSpec
   extend RSpec::Matchers::DSL
 
   matcher :have_field do |field_name|
-    define_method :parameter_for do |actual|
-      actual.parameters.detect { |p| p.id == @parameter_id }
-    end
-
     define_method :field_for do |parameter|
       parameter.fields[field_name]
     end
@@ -22,14 +18,9 @@ module Chemtrail::RSpec
       end
     end
 
-    match do |actual|
-      parameter = parameter_for(actual)
+    match do |parameter|
       field = field_for(parameter)
-      !parameter.nil? && !field.nil? && matches_value?(field)
-    end
-
-    chain :on do |parameter_id|
-      @parameter_id = parameter_id
+      !field.nil? && matches_value?(field)
     end
 
     chain :with_value do |value|
@@ -40,16 +31,12 @@ module Chemtrail::RSpec
       @included_value = value
     end
 
-    failure_message_for_should do |actual|
-      if parameter = parameter_for(actual)
-        if field = field_for(parameter)
-          expected_field = @value || @included_value
-          %(expected parameter #{@parameter_id.inspect} field #{field_name.inspect} to have value #{expected_field.inspect}, but got #{field.inspect})
-        else
-          %(expected parameter #{@parameter_id.inspect} to have type #{field_name.inspect})
-        end
+    failure_message_for_should do |parameter|
+      if field = field_for(parameter)
+        expected_field = @value || @included_value
+        %(expected parameter #{parameter.id} field #{field_name.inspect} to have value #{expected_field.inspect}, but got #{field.inspect})
       else
-        %(expected to find parameter #{@parameter_id.inspect}, but got nothing)
+        %(expected parameter #{parameter.id} to have type #{field_name.inspect})
       end
     end
   end
