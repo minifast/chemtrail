@@ -9,7 +9,9 @@ module Chemtrail::RSpec
     end
 
     define_method :matches_value? do |property|
-      if @value
+      if @finder
+        property == Chemtrail::Function.new("Fn::FindInMap", *@finder).to_hash
+      elsif @value
         property == @value
       elsif @reference
         property.id == @reference
@@ -59,9 +61,15 @@ module Chemtrail::RSpec
       @reference = reference
     end
 
+    chain :with_finder do |mapping_name, key, subkey|
+      @finder = [mapping_name, key, subkey]
+    end
+
     failure_message_for_should do |resource|
       if property = property_for(resource)
-        if @value
+        if @finder
+          %(expected resource #{resource.id} property #{property_name.inspect} to have searched #{@finder[0]} for #{@finder[1]} #{@finder[2]})
+        elsif @value
           %(expected resource #{resource.id} property #{property_name.inspect} to have value #{@value.inspect}, but got #{property.inspect})
         else
           %(expected resource #{resource.id} property #{property_name.inspect} to refer to #{@reference.inspect}, but got #{property.id.inspect})
