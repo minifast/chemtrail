@@ -18,5 +18,12 @@ describe Chemtrail::SectionPresenter do
 
       its(:to_hash) { should == {"Socks" => {tacos: "great"}} }
     end
+
+    context "when there are two entries" do
+      let(:other_entry) { double(:entry, to_hash: {teeth: "amazing"}) }
+      let(:entries) { [entry, other_entry] }
+
+      its(:to_hash) { should == {"Socks" => {tacos: "great", teeth: "amazing"}} }
+    end
   end
 end

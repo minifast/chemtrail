@@ -36,7 +36,7 @@ module Chemtrail::RSpec
         expected_field = @value || @included_value
         %(expected parameter #{parameter.id} field #{field_name.inspect} to have value #{expected_field.inspect}, but got #{field.inspect})
       else
-        %(expected parameter #{parameter.id} to have type #{field_name.inspect})
+        %(expected parameter #{parameter.id} to have field #{field_name.inspect})
       end
     end
   end
